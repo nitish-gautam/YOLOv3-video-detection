@@ -33,13 +33,10 @@ print (cv2.__version__)
 Start of: Reading input video
 """
 #NOTE:
-# Defining 'VideoCapture' object
-# and reading video from a file
-# make sure that the path and file name is correct
+# Defining 'VideoCapture' object and reading video from a file make sure that the path and file name is correct
 video = cv2.VideoCapture('videos/demo-traffic-cars.mp4')
 
-# Preparing variable for writer
-# that we will use to write processed frames
+# Preparing variable for writer that we will use to write processed frames
 writer = None
 
 # Preparing variables for spatial dimensions of the frames
@@ -56,8 +53,7 @@ Reading input video
 Start of: Loading YOLO v3 network
 """
 
-# Loading COCO class labels from file
-# Opening file
+# Loading COCO class labels from file and Opening file
 with open('yolo-coco-data/coco.names') as f:
     # Getting labels reading every line
     # and putting them into the list
@@ -68,8 +64,7 @@ with open('yolo-coco-data/coco.names') as f:
 # print('List with labels names:')
 # print(labels)
 
-# Loading trained YOLO v3 Objects Detector
-# with the help of 'dnn' library from OpenCV
+# Loading trained YOLO v3 Objects Detector with the help of 'dnn' library from OpenCV
 network = cv2.dnn.readNetFromDarknet('yolo-coco-data/yolov3.cfg',
                                      'yolo-coco-data/yolov3.weights')
 
@@ -101,8 +96,6 @@ threshold = 0.3
 colours = np.random.randint(0, 255, size=(len(labels), 3), dtype='uint8')
 
 # # Check point
-# print()
-# print(type(colours))  # <class 'numpy.ndarray'>
 # print(colours.shape)
 # print(colours[0])
 
@@ -117,12 +110,10 @@ Loading YOLO v3 network
 Start of: Reading frames in the loop
 """
 
-# Defining variable for counting frames
-# At the end we will show total amount of processed frames
+# Defining variable for counting frames at the end we will show total amount of processed frames
 f = 0
 
-# Defining variable for counting total time
-# At the end we will show time spent for processing all frames
+# Defining variable for counting total time At the end we will show time spent for processing all frames
 t = 0
 
 # Defining loop for catching frames
@@ -130,14 +121,11 @@ while True:
     # Capturing frame-by-frame
     ret, frame = video.read()
 
-    # If the frame was not retrieved
-    # e.g.: at the end of the video,
-    # then we break the loop
+    # If the frame was not retrieved e.g.: at the end of the video, then we break the loop
     if not ret:
         break
 
-    # Getting spatial dimensions of the frame
-    # we do it only once from the very beginning
+    # Getting spatial dimensions of the frame as we do it only once from the very beginning
     # all other frames have the same dimension
     if w is None or h is None:
         # Slicing from tuple only first two elements
@@ -156,7 +144,7 @@ while True:
     # The 'cv2.dnn.blobFromImage' function returns 4-dimensional blob from current
     # frame after mean subtraction, normalizing, and RB channels swapping
     # Resulted shape has number of frames, number of channels, width and height
-    # E.G.:
+    # e.g.:
     # blob = cv2.dnn.blobFromImage(image, scalefactor=1.0, size, mean, swapRB=True)
     blob = cv2.dnn.blobFromImage(frame, 1 / 255.0, (416, 416),
                                  swapRB=True, crop=False)
@@ -193,8 +181,7 @@ while True:
     Start of: Getting bounding boxes
     """
 
-    # Preparing lists for detected bounding boxes,
-    # obtained confidences and class's number
+    # Preparing lists for detected bounding boxes, obtained confidences and class's number
     bounding_boxes = []
     confidences = []
     classIDs = []
@@ -209,8 +196,7 @@ while True:
             class_current = np.argmax(scores)
             # Getting value of probability for defined class
             confidence_current = scores[class_current]
-
-            # # Check point
+            
             # # Every 'detected_objects' numpy array has first 4 numbers with
             # # bounding box coordinates and rest 80 with probabilities
             #  # for every class
@@ -227,15 +213,13 @@ while True:
                 # of bounding box, its width and height for original frame
                 box_current = detected_objects[0:4] * np.array([w, h, w, h])
 
-                # Now, from YOLO data format, we can get top left corner coordinates
-                # that are x_min and y_min
+                # Now, from YOLO data format, we can get top left corner coordinates that are x_min and y_min
                 x_center, y_center, box_width, box_height = box_current
                 x_min = int(x_center - (box_width / 2))
                 y_min = int(y_center - (box_height / 2))
 
                 # Adding results into prepared lists
-                bounding_boxes.append([x_min, y_min,
-                                       int(box_width), int(box_height)])
+                bounding_boxes.append([x_min, y_min, int(box_width), int(box_height)])
                 confidences.append(float(confidence_current))
                 classIDs.append(class_current)
             	
@@ -268,21 +252,17 @@ while True:
     Start of: Drawing bounding boxes and labels
     """
 
-    # Checking if there is at least one detected object
-    # after non-maximum suppression
+    # Checking if there is at least one detected object after non-maximum suppression
     if len(results) > 0:
         # Going through indexes of results
         for i in results.flatten():
-            # Getting current bounding box coordinates,
-            # its width and height
+            # Getting current bounding box coordinates, its width and height
             x_min, y_min = bounding_boxes[i][0], bounding_boxes[i][1]
             box_width, box_height = bounding_boxes[i][2], bounding_boxes[i][3]
 
-            # Preparing colour for current bounding box
-            # and converting from numpy array to list
+            # Preparing colour for current bounding box and converting from numpy array to list
             colour_box_current = colours[classIDs[i]].tolist()
 
-            # # # Check point
             # print(type(colour_box_current))  # <class 'list'>
             # print(colour_box_current)  # [172 , 10, 127]
 
@@ -311,18 +291,12 @@ while True:
     """
 
     # Initializing writer
-    # we do it only once from the very beginning
-    # when we get spatial dimensions of the frames
+    # we do it only once from the very beginning when we get spatial dimensions of the frames
     if writer is None:
-        # Constructing code of the codec
-        # to be used in the function VideoWriter
+        # Constructing code of the codec to be used in the function VideoWriter
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 
         # Writing current processed frame into the video file
-        # Pay attention! If you're using Windows, yours path might looks like:
-        # r'videos\result-traffic-cars.mp4'
-        # or:
-        # 'videos\\result-traffic-cars.mp4'
         writer = cv2.VideoWriter('videos/result-traffic-cars.mp4', fourcc, 30,
                                  (frame.shape[1], frame.shape[0]), True)
 
