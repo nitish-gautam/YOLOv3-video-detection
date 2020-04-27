@@ -1,9 +1,10 @@
 # YOLOv3-video-detection
+This AIM of this repository is to create  real time / video application using Deep Learning based Object Detection using YOLOv3 with OpenCV
+YOLO trained on the COCO dataset. The COCO dataset consists of 80 labels.
 
 ### Dependencies
-
 <ul>
-    <li>
+    <li> 
         <a href="https://pjreddie.com/darknet/yolo/" >YOLO</a>
     </li>
     <li>
@@ -11,8 +12,14 @@
     </li>
 </ul>
 
-YOLO trained on the COCO dataset. The COCO dataset consists of 80 labels. You can fetch the weights from the link below 
-https://github.com/pjreddie/darknet/blob/master/data/coco.names
+You also need to download the `yolo.weights` file and place it as described below :
+
+You can download the weights by - 
+```
+    $ wget https://pjreddie.com/media/files/yolov3.weights
+    or 
+    https://github.com/pjreddie/darknet/blob/master/data/coco.names
+```
 
 The directories structure should as follow:
 
